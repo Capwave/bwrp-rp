@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Bundeswehr Dortmund RP</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+        <link rel="stylesheet" href="style.css">
+        <style></style>
+    </head>
+
+    <body ng-app="myApp" ng-controller="myCrtl">
+        <div class="box">
+            <form name="signupform" novalidate autocomplete="off">
+            <h1 ng-show="showlogin">Login</h1>
+            <div class="textfield">
+                <i class="fa fa-user icon"></i>
+                <input type="text" class="textfield-input" name="username" ng-model="username" required>
+                <label>Username</label>
+                <div class="indicator"></div>
+                <div>
+                    <span ng-show="signupform.$submitted || signupform.username.$dirty">
+                        <span class="error" ng-show="signupform.username.$error.required"> <i class="fa fa-exclamation-circle"></i> Username Erforderlich</span>
+                    </span><br>
+                </div>
+            </div>
+            <div class="textfield">
+                <i class="fa fa-lock icon"></i>
+                <input type="password" class="textfield-input" name="password" ng-model="password" required>
+                <label>Password</label>
+                <div class="indicator"></div>
+                <div>
+                    <span ng-show="signupform.$submitted || signupform.password.$dirty">
+                        <span class="error" ng-show="signupform.password.$error.required"> <i class="fa fa-exclamation-circle"></i> Password Erforderlich</span>
+                    </span><br>
+                </div>
+            </div> <br>
+            <div class="logindiv">
+            <button type="submit", name="submit" class="loginbtn" ng-click="login()">
+                <span class="lspan"></span>
+                <span class="lspan"></span>
+                <span class="lspan"></span>
+                <span class="lspan"></span>
+            {{btnName}}</button>
+        </div>
+    </div>
+     </form>
+    </body>
+    <script>
+        var app = angular.module("myApp", []);
+        app.controller("myCrtl", function($scope,$http,$window) {
+                $scope.btnName = "Login";
+                $scope.showlogin = true;
+                $scope.loginpage = function() {
+                    $scope.showlogin = $scope.showlogin;
+                    $scope.btnName = "Login"
+                    $scope.showsignupform.$setPristine();
+                    $scope.username = null;
+                    $scope.password = null;
+                }
+                $scope.login = function() {
+                    if($scope.btnName == "Login") {
+                        if($scope.username != null && $scope.password != null) {
+                            $scope.postf();
+                        }
+                    }
+                }
+                $scope.postf = function(){
+                    $http.post (
+                        "./login.php", {
+                            'username':$scope.username,
+                            'passwort':$scope.password,
+                            'btnName':$scope.btnName
+                        }
+                    ).success(function(data) {
+                        alert(data);
+                        if(data=="Username wird bereits verwendet!") {
+                            return;
+                        }
+                        $window.location.reload();
+                        if(data=="Erfolgreich Eingeloggt") {
+                            location='Bundeswehr.html';
+                        }
+                    });
+                }
+        });
+     </script>
+</html>
